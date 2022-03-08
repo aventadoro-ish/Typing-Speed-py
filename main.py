@@ -38,7 +38,7 @@ class WindowElements(Enum):
     TIME_SETTER = auto()
 
 
-# TODO: prettier in
+# TODO: prettier interface
 WINDOW_LAYOUT = [
     [sg.Button('English', key=WindowElements.ENGLISH_BTN),
      sg.Button('Russian', key=WindowElements.RUSSIAN_RTN),
@@ -72,6 +72,7 @@ class Dictionary:
 
     def random_word(self, is_normalized=True) -> str:
         if is_normalized:
+            # TODO: fix distributions (has preference for '')
             rand = int(min(abs(random.expovariate(-3) * len(self.words)), len(self.words)-1))
             # print(f'{rand}, {len(self.words)}, {self.words[rand]}')
 
@@ -86,9 +87,10 @@ class LogEntry:
     time_: int
     hits: int
     misses: int
+    epoch_time: int
 
     def __str__(self):
-        return f'"{self.dict_name}", {self.time_}, {self.hits}, {self.misses}\n'
+        return f'"{self.dict_name}", {self.time_}, {self.hits}, {self.misses}, {self.epoch_time}\n'
 
 
 class ProgressLogger:
@@ -173,7 +175,7 @@ class Testing:
 
     def get_results_log(self) -> LogEntry:
         period = self.ENDLESS_MODE_UPD_PERIOD if self.timeout_sec == 0 else self.timeout_sec
-        return LogEntry(self.test_dictionary.source, period, self.scored, self.missed)
+        return LogEntry(self.test_dictionary.source, period, self.scored, self.missed, int(time.time()))
 
     def get_result_str(self):
         period = self.ENDLESS_MODE_UPD_PERIOD if self.timeout_sec == 0 else self.timeout_sec
